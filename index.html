@@ -2,8 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Will You Be My Valentine?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Secret Surprise 💖</title>
+
+<!-- Open Graph (iMessage / WhatsApp Preview) -->
+<meta property="og:title" content="Secret Surprise 💝" />
+<meta property="og:description" content="Open this for a special surprise ❤️" />
+<meta property="og:type" content="website" />
+
+<!-- Twitter Preview -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Secret Surprise 💝">
+<meta name="twitter:description" content="Open this for a special surprise ❤️">
+<meta name="twitter:image" content="https://via.placeholder.com/600x315.png?text=Secret+Surprise">
 
 <style>
 :root {
@@ -45,7 +56,7 @@ h1 {
 
 .buttons {
     display: flex;
-    flex-direction: column; /* mobile-first */
+    flex-direction: column;
     align-items: center;
     gap: 18px;
     width: 100%;
@@ -65,24 +76,18 @@ button {
     border: none;
     cursor: pointer;
     min-width: 160px;
-    transition: transform 0.3s ease;
-    position: relative;
+    transition: transform 0.25s ease;
 }
 
 #yesBtn {
     background: var(--white);
     color: var(--pink-dark);
     font-weight: bold;
-    z-index: 2;
 }
 
 #noBtn {
     background: #f8b4d9;
     color: #8b004d;
-}
-
-button:hover {
-    transform: scale(1.05);
 }
 
 .hidden {
@@ -113,16 +118,35 @@ canvas {
 <canvas id="confettiCanvas"></canvas>
 
 <div class="container">
-    <h1 id="question">Will you be my valentine? ✨💖</h1>
+    <h1 id="question">Will you be my valentine? 💖</h1>
 
     <div class="buttons" id="buttons">
-        <button id="yesBtn">Yes 💘</button>
-        <button id="noBtn">No 💔</button>
+        <button 
+            id="yesBtn" 
+            aria-label="Yes, I will be your valentine"
+        >
+            Yes 💘
+        </button>
+
+        <button 
+            id="noBtn" 
+            aria-label="No, I don't want to be your valentine"
+        >
+            No 💔
+        </button>
     </div>
 
-    <div class="celebration hidden" id="celebration">
-        <!-- Replace this GIF with yours -->
-        <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Celebration GIF">
+    <div 
+        class="celebration hidden" 
+        id="celebration" 
+        role="status" 
+        aria-live="polite"
+    >
+        <!-- Replace with your GIF -->
+        <img 
+            src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" 
+            alt="Celebration animation"
+        >
         <h2 style="color:white; margin-top:15px;">YAY!!! 🥰</h2>
     </div>
 </div>
@@ -135,6 +159,8 @@ const buttons = document.getElementById("buttons");
 const celebration = document.getElementById("celebration");
 
 let noClickCount = 0;
+let currentScale = 1;
+const MAX_SCALE = 2.5; // prevents zoom explosion
 
 const noTexts = [
     "No 💔",
@@ -148,8 +174,10 @@ const noTexts = [
 noBtn.addEventListener("click", () => {
     noClickCount++;
 
-    const scaleAmount = 1 + (noClickCount * 0.15);
-    yesBtn.style.transform = `scale(${scaleAmount})`;
+    if (currentScale < MAX_SCALE) {
+        currentScale += 0.12;
+        yesBtn.style.transform = `scale(${currentScale})`;
+    }
 
     if (noClickCount < noTexts.length) {
         noBtn.textContent = noTexts[noClickCount];
@@ -165,7 +193,7 @@ yesBtn.addEventListener("click", () => {
     startConfetti();
 });
 
-/* ================= CONFETTI ================= */
+/* CONFETTI */
 
 const canvas = document.getElementById("confettiCanvas");
 const ctx = canvas.getContext("2d");
@@ -203,7 +231,6 @@ function drawConfetti() {
     confetti.forEach((c, index) => {
         ctx.fillStyle = c.color;
         ctx.fillRect(c.x, c.y, c.size, c.size);
-
         c.y += c.speed;
 
         if (c.y > canvas.height) {

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Will You Be My Valentine?</title>
+
+<style>
+:root {
+    --pink-light: #ffd6eb;
+    --pink-main: #ff69b4;
+    --pink-dark: #ff1493;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, var(--pink-light), var(--pink-main));
+    text-align: center;
+    overflow: hidden;
+}
+
+.container {
+    padding: 20px;
+    max-width: 500px;
+    width: 100%;
+}
+
+h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    color: var(--white);
+    margin-bottom: 40px;
+    text-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column; /* mobile-first */
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+}
+
+@media (min-width: 600px) {
+    .buttons {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+button {
+    padding: 14px 30px;
+    font-size: 1.1rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    min-width: 160px;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+#yesBtn {
+    background: var(--white);
+    color: var(--pink-dark);
+    font-weight: bold;
+    z-index: 2;
+}
+
+#noBtn {
+    background: #f8b4d9;
+    color: #8b004d;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+.hidden {
+    display: none;
+}
+
+.celebration {
+    margin-top: 30px;
+}
+
+.celebration img {
+    width: 220px;
+    max-width: 80%;
+    border-radius: 20px;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confettiCanvas"></canvas>
+
+<div class="container">
+    <h1 id="question">Will you be my valentine? ✨💖</h1>
+
+    <div class="buttons" id="buttons">
+        <button id="yesBtn">Yes 💘</button>
+        <button id="noBtn">No 💔</button>
+    </div>
+
+    <div class="celebration hidden" id="celebration">
+        <!-- Replace this GIF with yours -->
+        <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Celebration GIF">
+        <h2 style="color:white; margin-top:15px;">YAY!!! 🥰</h2>
+    </div>
+</div>
+
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const question = document.getElementById("question");
+const buttons = document.getElementById("buttons");
+const celebration = document.getElementById("celebration");
+
+let noClickCount = 0;
+
+const noTexts = [
+    "No 💔",
+    "Really? 😢",
+    "Are you sure? 🥺",
+    "For real? 😭",
+    "Last chance? 😩",
+    "Please? 💞"
+];
+
+noBtn.addEventListener("click", () => {
+    noClickCount++;
+
+    const scaleAmount = 1 + (noClickCount * 0.15);
+    yesBtn.style.transform = `scale(${scaleAmount})`;
+
+    if (noClickCount < noTexts.length) {
+        noBtn.textContent = noTexts[noClickCount];
+    } else {
+        noBtn.textContent = "Okay fine 😔";
+    }
+});
+
+yesBtn.addEventListener("click", () => {
+    question.classList.add("hidden");
+    buttons.classList.add("hidden");
+    celebration.classList.remove("hidden");
+    startConfetti();
+});
+
+/* ================= CONFETTI ================= */
+
+const canvas = document.getElementById("confettiCanvas");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+let confetti = [];
+
+function randomColor() {
+    const colors = ["#ff69b4", "#ff1493", "#ffffff", "#ffc0cb"];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function createConfetti() {
+    confetti = [];
+    for (let i = 0; i < 200; i++) {
+        confetti.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height - canvas.height,
+            size: Math.random() * 8 + 4,
+            speed: Math.random() * 3 + 2,
+            color: randomColor()
+        });
+    }
+}
+
+function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    confetti.forEach((c, index) => {
+        ctx.fillStyle = c.color;
+        ctx.fillRect(c.x, c.y, c.size, c.size);
+
+        c.y += c.speed;
+
+        if (c.y > canvas.height) {
+            confetti.splice(index, 1);
+        }
+    });
+}
+
+function startConfetti() {
+    createConfetti();
+    const duration = 5000;
+    const end = Date.now() + duration;
+
+    function animate() {
+        drawConfetti();
+        if (Date.now() < end) {
+            requestAnimationFrame(animate);
+        }
+    }
+    animate();
+}
+</script>
+
+</body>
+</html>

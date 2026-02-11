@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 
-<!-- Viewport -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!-- Viewport (REQUIRED for notch support) -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<!-- Theme Colors -->
+<!-- Theme / Status Bar -->
 <meta name="theme-color" content="#ff69b4">
 <meta name="theme-color" content="#ff69b4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#ff69b4" media="(prefers-color-scheme: dark)">
@@ -57,15 +57,21 @@
 }
 
 html {
-    touch-action: manipulation;
     -webkit-text-size-adjust: 100%;
+    background: var(--pink-main); /* fills behind notch */
 }
 
 body {
-    height: 100vh;
+    min-height: 100vh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+
     display: flex;
     justify-content: center;
     align-items: center;
+
     background: linear-gradient(135deg, var(--pink-light), var(--pink-main));
     text-align: center;
     overflow: hidden;
@@ -109,7 +115,6 @@ button {
     cursor: pointer;
     min-width: 160px;
     transition: transform 0.2s ease;
-    touch-action: manipulation;
     user-select: none;
     position: relative;
 }
@@ -174,10 +179,6 @@ canvas {
 </div>
 
 <script>
-document.addEventListener('gesturestart', function (e) {
-    e.preventDefault();
-});
-
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const question = document.getElementById("question");
@@ -206,7 +207,6 @@ noBtn.addEventListener("click", () => {
     noClickCount++;
     currentScale += 0.15;
     yesBtn.style.transform = `scale(${currentScale})`;
-
     const index = noClickCount % noTexts.length;
     noBtn.textContent = noTexts[index];
 });

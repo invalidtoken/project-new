@@ -2,19 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+<!-- Proper mobile handling -->
+<meta name="viewport" 
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+
 <title>Secret Surprise 💖</title>
 
-<!-- Open Graph (iMessage / WhatsApp Preview) -->
+<!-- Open Graph -->
 <meta property="og:title" content="Secret Surprise 💝" />
 <meta property="og:description" content="Open this for a special surprise ❤️" />
+<meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Secret+Surprise" />
 <meta property="og:type" content="website" />
 
-<!-- Twitter Preview -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Secret Surprise 💝">
 <meta name="twitter:description" content="Open this for a special surprise ❤️">
-<meta name="twitter:image" content="https://via.placeholder.com/600x315.png?text=Secret+Surprise">
+<meta name="twitter:image" content="https://via.placeholder.com/1200x630.png?text=Secret+Surprise">
 
 <style>
 :root {
@@ -28,7 +34,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Segoe UI", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    touch-action: manipulation; /* disables double tap zoom */
+    -webkit-text-size-adjust: 100%; /* prevent auto text zoom */
 }
 
 body {
@@ -39,6 +50,7 @@ body {
     background: linear-gradient(135deg, var(--pink-light), var(--pink-main));
     text-align: center;
     overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .container {
@@ -52,6 +64,7 @@ h1 {
     color: var(--white);
     margin-bottom: 40px;
     text-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    user-select: none;
 }
 
 .buttons {
@@ -77,6 +90,8 @@ button {
     cursor: pointer;
     min-width: 160px;
     transition: transform 0.25s ease;
+    touch-action: manipulation;
+    user-select: none;
 }
 
 #yesBtn {
@@ -123,6 +138,7 @@ canvas {
     <div class="buttons" id="buttons">
         <button 
             id="yesBtn" 
+            type="button"
             aria-label="Yes, I will be your valentine"
         >
             Yes 💘
@@ -130,7 +146,8 @@ canvas {
 
         <button 
             id="noBtn" 
-            aria-label="No, I don't want to be your valentine"
+            type="button"
+            aria-label="No, I do not want to be your valentine"
         >
             No 💔
         </button>
@@ -152,6 +169,11 @@ canvas {
 </div>
 
 <script>
+/* Prevent any gesture zoom (extra safety for iOS) */
+document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+});
+
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const question = document.getElementById("question");
@@ -160,7 +182,7 @@ const celebration = document.getElementById("celebration");
 
 let noClickCount = 0;
 let currentScale = 1;
-const MAX_SCALE = 2.5; // prevents zoom explosion
+const MAX_SCALE = 2.2;
 
 const noTexts = [
     "No 💔",
@@ -175,7 +197,7 @@ noBtn.addEventListener("click", () => {
     noClickCount++;
 
     if (currentScale < MAX_SCALE) {
-        currentScale += 0.12;
+        currentScale += 0.1;
         yesBtn.style.transform = `scale(${currentScale})`;
     }
 

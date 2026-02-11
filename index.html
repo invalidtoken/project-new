@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 
-<!-- Viewport (REQUIRED for notch support) -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- LOCK SCREEN + NOTCH SUPPORT -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
 <!-- Theme / Status Bar -->
 <meta name="theme-color" content="#ff69b4">
@@ -58,11 +58,14 @@
 
 html {
     -webkit-text-size-adjust: 100%;
-    background: var(--pink-main); /* fills behind notch */
+    background: var(--pink-main);
+    touch-action: manipulation;
 }
 
 body {
     min-height: 100vh;
+
+    /* NOTCH SAFE AREA */
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
@@ -117,6 +120,7 @@ button {
     transition: transform 0.2s ease;
     user-select: none;
     position: relative;
+    touch-action: manipulation;
 }
 
 #yesBtn {

@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 
-<!-- Proper mobile handling -->
 <meta name="viewport" 
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,7 +10,6 @@
 
 <title>Secret Surprise 💖</title>
 
-<!-- Open Graph -->
 <meta property="og:title" content="Secret Surprise 💝" />
 <meta property="og:description" content="Open this for a special surprise ❤️" />
 <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Secret+Surprise" />
@@ -38,8 +36,8 @@
 }
 
 html {
-    touch-action: manipulation; /* disables double tap zoom */
-    -webkit-text-size-adjust: 100%; /* prevent auto text zoom */
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -89,20 +87,23 @@ button {
     border: none;
     cursor: pointer;
     min-width: 160px;
-    transition: transform 0.25s ease;
+    transition: transform 0.2s ease;
     touch-action: manipulation;
     user-select: none;
+    position: relative;
 }
 
 #yesBtn {
     background: var(--white);
     color: var(--pink-dark);
     font-weight: bold;
+    z-index: 2; /* So it grows above No */
 }
 
 #noBtn {
     background: #f8b4d9;
     color: #8b004d;
+    z-index: 1;
 }
 
 .hidden {
@@ -159,7 +160,6 @@ canvas {
         role="status" 
         aria-live="polite"
     >
-        <!-- Replace with your GIF -->
         <img 
             src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" 
             alt="Celebration animation"
@@ -169,7 +169,6 @@ canvas {
 </div>
 
 <script>
-/* Prevent any gesture zoom (extra safety for iOS) */
 document.addEventListener('gesturestart', function (e) {
     e.preventDefault();
 });
@@ -182,30 +181,32 @@ const celebration = document.getElementById("celebration");
 
 let noClickCount = 0;
 let currentScale = 1;
-const MAX_SCALE = 2.2;
 
 const noTexts = [
     "No 💔",
     "Really? 😢",
     "Are you sure? 🥺",
     "For real? 😭",
-    "Last chance? 😩",
-    "Please? 💞"
+    "Think again? 🤨",
+    "You serious? 😳",
+    "Last last chance? 😩",
+    "Pretty please? 🥹",
+    "Don't break my heart 💘",
+    "I’ll cry 😭💗",
+    "Final answer? 🤔",
+    "You sure sure? 😅"
 ];
 
 noBtn.addEventListener("click", () => {
     noClickCount++;
 
-    if (currentScale < MAX_SCALE) {
-        currentScale += 0.1;
-        yesBtn.style.transform = `scale(${currentScale})`;
-    }
+    /* YES keeps growing infinitely */
+    currentScale += 0.15;
+    yesBtn.style.transform = `scale(${currentScale})`;
 
-    if (noClickCount < noTexts.length) {
-        noBtn.textContent = noTexts[noClickCount];
-    } else {
-        noBtn.textContent = "Okay fine 😔";
-    }
+    /* Loop texts infinitely */
+    const index = noClickCount % noTexts.length;
+    noBtn.textContent = noTexts[index];
 });
 
 yesBtn.addEventListener("click", () => {

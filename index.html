@@ -2,38 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<!-- Chrome / Android UI Color -->
+
+<!-- Viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<!-- Theme Colors -->
 <meta name="theme-color" content="#ff69b4">
 <meta name="theme-color" content="#ff69b4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#ff69b4" media="(prefers-color-scheme: dark)">
-
-<!-- iOS Fullscreen Support -->
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<link rel="icon" type="image/png" href="/png/image-192.png">
-
-
-<meta name="viewport" 
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
 
 <title>Secret Surprise 💖</title>
+<meta name="description" content="Open this for a special surprise ❤️">
 
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Secret Surprise 💝" />
-<meta property="og:description" content="Open this for a special surprise ❤️" />
-<meta property="og:image" content="/png/image-512.png" />
-<meta property="og:image:secure_url" content="/png/image-512.png">
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="192x192" href="png/image-192.png">
+<link rel="apple-touch-icon" href="png/image-192.png">
+
+<!-- Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://invalidtoken.github.io/project-new/">
+<meta property="og:title" content="Secret Surprise 💝">
+<meta property="og:description" content="Open this for a special surprise ❤️">
+<meta property="og:image" content="https://invalidtoken.github.io/project-new/png/image-512.png">
+<meta property="og:image:secure_url" content="https://invalidtoken.github.io/project-new/png/image-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
 
+<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Secret Surprise 💝">
 <meta name="twitter:description" content="Open this for a special surprise ❤️">
-<meta name="twitter:image" content="/png/image-512.png">
-<link rel="manifest" href="manifest.json">
+<meta name="twitter:image" content="https://invalidtoken.github.io/project-new/png/image-512.png">
+
 <style>
 :root {
     --pink-light: #ffd6eb;
@@ -111,7 +118,7 @@ button {
     background: var(--white);
     color: var(--pink-dark);
     font-weight: bold;
-    z-index: 2; /* So it grows above No */
+    z-index: 2;
 }
 
 #noBtn {
@@ -151,33 +158,17 @@ canvas {
     <h1 id="question">Will you be my valentine? 💖</h1>
 
     <div class="buttons" id="buttons">
-        <button 
-            id="yesBtn" 
-            type="button"
-            aria-label="Yes, I will be your valentine"
-        >
+        <button id="yesBtn" type="button" aria-label="Yes, I will be your valentine">
             Yes 💘
         </button>
 
-        <button 
-            id="noBtn" 
-            type="button"
-            aria-label="No, I do not want to be your valentine"
-        >
+        <button id="noBtn" type="button" aria-label="No, I do not want to be your valentine">
             No 💔
         </button>
     </div>
 
-    <div 
-        class="celebration hidden" 
-        id="celebration" 
-        role="status" 
-        aria-live="polite"
-    >
-        <img 
-            src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" 
-            alt="Celebration animation"
-        >
+    <div class="celebration hidden" id="celebration" role="status" aria-live="polite">
+        <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Celebration animation">
         <h2 style="color:white; margin-top:15px;">YAY!!! 🥰</h2>
     </div>
 </div>
@@ -213,12 +204,9 @@ const noTexts = [
 
 noBtn.addEventListener("click", () => {
     noClickCount++;
-
-    /* YES keeps growing infinitely */
     currentScale += 0.15;
     yesBtn.style.transform = `scale(${currentScale})`;
 
-    /* Loop texts infinitely */
     const index = noClickCount % noTexts.length;
     noBtn.textContent = noTexts[index];
 });
@@ -230,8 +218,7 @@ yesBtn.addEventListener("click", () => {
     startConfetti();
 });
 
-/* CONFETTI */
-
+/* Confetti */
 const canvas = document.getElementById("confettiCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -264,15 +251,11 @@ function createConfetti() {
 
 function drawConfetti() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     confetti.forEach((c, index) => {
         ctx.fillStyle = c.color;
         ctx.fillRect(c.x, c.y, c.size, c.size);
         c.y += c.speed;
-
-        if (c.y > canvas.height) {
-            confetti.splice(index, 1);
-        }
+        if (c.y > canvas.height) confetti.splice(index, 1);
     });
 }
 
@@ -280,12 +263,9 @@ function startConfetti() {
     createConfetti();
     const duration = 5000;
     const end = Date.now() + duration;
-
     function animate() {
         drawConfetti();
-        if (Date.now() < end) {
-            requestAnimationFrame(animate);
-        }
+        if (Date.now() < end) requestAnimationFrame(animate);
     }
     animate();
 }
